@@ -1,0 +1,33 @@
+spring:
+  # Database MySQL
+  datasource:
+    url: jdbc:mysql://localhost:3306/payment-system?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # MongoDB
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/payment-system-audit
+
+  # JPA Configuration
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # DevTools Configuration
+  devtools:
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+
+# Logging for Development
+logging:
+  level:
+    com.xunim: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

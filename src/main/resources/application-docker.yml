@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql:3306/payment-system
+    username: root
+    password: root
+
+  data:
+    mongodb:
+      uri: mongodb://mongodb:27017/payment-system-audit
+
+    redis:
+      host: redis
+      port: 6379
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: admin
