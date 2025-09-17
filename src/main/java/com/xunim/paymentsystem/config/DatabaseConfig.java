@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableJpaRepositories(basePackages = "com.xunim.paymentsystem.repository.mysql")
 @EnableMongoRepositories(basePackages = "com.xunim.paymentsystem.repository.mongodb")
-@EntityScan("com.magalupay.paymentsystem.entity")
+@EntityScan("com.xunim.paymentsystem.entity")
 @EnableJpaAuditing
 @EnableMongoAuditing
 @EnableTransactionManagement
