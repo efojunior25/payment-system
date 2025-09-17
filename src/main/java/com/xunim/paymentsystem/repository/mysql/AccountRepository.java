@@ -2,10 +2,10 @@ package com.xunim.paymentsystem.repository.mysql;
 
 import com.xunim.paymentsystem.entity.Account;
 import com.xunim.paymentsystem.enums.AccountStatus;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;

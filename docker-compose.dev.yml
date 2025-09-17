@@ -10,7 +10,14 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/xunimpay
-      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/xunimpay_audit
+      - SPRING_DATASOURCE_USERNAME=xunim
+      - SPRING_DATASOURCE_PASSWORD=xunim123
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:admin@mongodb:27017/xunimpay_audit?authSource=admin
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PASSWORD=redis123
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_USERNAME=admin
+      - SPRING_RABBITMQ_PASSWORD=admin
     depends_on:
       mysql:
         condition: service_healthy
@@ -23,6 +30,12 @@ services:
     networks:
       - xunimpay-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health/simple"]
+      timeout: 20s
+      retries: 5
+      interval: 30s
+      start_period: 60s
 
   # MySQL Database
   mysql:
@@ -38,10 +51,13 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./scripts/init-mysql.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
       timeout: 20s
       retries: 10
+      interval: 30s
+      start_period: 30s
     networks:
       - xunimpay-network
     restart: unless-stopped
@@ -60,9 +76,11 @@ services:
       - mongodb_data:/data/db
       - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init.js
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       timeout: 20s
       retries: 5
+      interval: 30s
+      start_period: 30s
     networks:
       - xunimpay-network
     restart: unless-stopped
@@ -77,9 +95,11 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "-a", "redis123", "ping"]
       timeout: 20s
       retries: 5
+      interval: 30s
+      start_period: 10s
     networks:
       - xunimpay-network
     restart: unless-stopped
@@ -94,12 +114,15 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: xunimpay
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       timeout: 20s
       retries: 5
+      interval: 30s
+      start_period: 30s
     networks:
       - xunimpay-network
     restart: unless-stopped
@@ -114,12 +137,16 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=xunimpay-cluster
+      - node.name=xunimpay-node
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=1s || exit 1"]
       timeout: 20s
       retries: 5
+      interval: 30s
+      start_period: 60s
     networks:
       - xunimpay-network
     restart: unless-stopped
@@ -132,13 +159,17 @@ services:
       - "5601:5601"
     environment:
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      SERVER_NAME: kibana.xunimpay.local
+      SERVER_PUBLICBASEURL: http://localhost:5601
     depends_on:
       elasticsearch:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:5601/api/status || exit 1"]
       timeout: 20s
       retries: 5
+      interval: 30s
+      start_period: 60s
     networks:
       - xunimpay-network
     restart: unless-stopped
@@ -146,14 +177,19 @@ services:
 volumes:
   mysql_data:
     driver: local
+    name: xunimpay_mysql_data
   mongodb_data:
     driver: local
+    name: xunimpay_mongodb_data
   redis_data:
     driver: local
+    name: xunimpay_redis_data
   rabbitmq_data:
     driver: local
+    name: xunimpay_rabbitmq_data
   elasticsearch_data:
     driver: local
+    name: xunimpay_elasticsearch_data
 
 networks:
   xunimpay-network:

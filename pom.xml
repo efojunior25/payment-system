@@ -11,7 +11,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.xunim</groupId>
-    <artifactId>payment-system</artifactId>
+    <artifactId>xunim-payment-system</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>payment-system</name>
     <description>Sistema de gestão de Pagamentos</description>

@@ -9,11 +9,18 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "com.xunim.paymentsystem.repository.mysql")
-@EnableMongoRepositories(basePackages = "com.xunim.paymentsystem.repository.mongodb")
+@EnableJpaRepositories(
+        basePackages = "com.xunim.paymentsystem.repository.mysql",
+        entityManagerFactoryRef = "entityManagerFactory",
+        transactionManagerRef = "transactionManager"
+)
+@EnableMongoRepositories(
+        basePackages = "com.xunim.paymentsystem.repository.mongodb"
+)
 @EntityScan("com.xunim.paymentsystem.entity")
 @EnableJpaAuditing
 @EnableMongoAuditing
 @EnableTransactionManagement
 public class DatabaseConfig {
+
 }
