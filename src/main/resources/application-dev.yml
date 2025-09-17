@@ -1,7 +1,11 @@
 spring:
+  config:
+    activate:
+      on-profile: dev
+
   # Database MySQL
   datasource:
-    url: jdbc:mysql://localhost:3307/xunimpay?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/xunimpay?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -9,7 +13,7 @@ spring:
   # MongoDB
   data:
     mongodb:
-      uri: mongodb://localhost:27017/payment-system-audit
+      uri: mongodb://localhost:27017/xunimpay-audit
 
   # JPA Configuration
   jpa:

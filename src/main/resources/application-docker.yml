@@ -1,19 +1,29 @@
 spring:
+  config:
+    activate:
+      on-profile: docker
+
   datasource:
-    url: jdbc:mysql://mysql:3306/payment-system
-    username: root
-    password: root
+    url: jdbc:mysql://mysql:3306/xunimpay
+    username: xunim
+    password: xunim123
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
     mongodb:
-      uri: mongodb://mongodb:27017/payment-system-audit
+      uri: mongodb://admin:admin@mongodb:27017/xunimpay_audit?authSource=admin
 
     redis:
       host: redis
       port: 6379
+      password: redis123
 
   rabbitmq:
     host: rabbitmq
     port: 5672
     username: admin
     password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: validate

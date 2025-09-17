@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentResposeDTO {
+public class PaymentResponseDTO {
 
     private Long id;
     private Long fromAccountId;

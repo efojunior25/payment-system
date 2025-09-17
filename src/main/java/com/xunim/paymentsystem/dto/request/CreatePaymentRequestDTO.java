@@ -1,13 +1,13 @@
 package com.xunim.paymentsystem.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.xunim.paymentsystem.enums.PaymentType;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -15,18 +15,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreatePaymentRequestDTO {
 
-    @NotBlank(message = "Email é obrigatório")
-    @Email(message = "Email deve ser válido")
-    private String email;
+    @NotNull(message = "ID da conta origem é obrigatório")
+    private Long fromAccountId;
 
-    @NotBlank(message = "Documento é obrigatório")
-    @Pattern(regexp = "\\d{11}|\\d{14}", message = "Documento deve conter 11 ou 14 dígitos")
-    private String document;
+    @NotNull(message = "ID da conta destino é obrigatório")
+    private Long toAccountId;
 
-    @NotBlank(message = "Nome completo é obrigatório")
-    @Size(min = 2, max = 255, message = "Nome deve ter entre 2 e 255 caracteres")
-    private String fullName;
+    @NotNull(message = "Valor é obrigatório")
+    @DecimalMin(value = "0.01", message = "Valor deve ser maior que zero")
+    @Digits(integer = 13, fraction = 2, message = "Valor deve ter no máximo 13 dígitos inteiros e 2 decimais")
+    private BigDecimal amount;
 
-    @Pattern(regexp = "\\d{10,11}", message = "Telefone deve conter 10 ou 11 dígitos")
-    private String phone;
+    @NotNull(message = "Tipo de pagamento é obrigatório")
+    private PaymentType paymentType;
+
+    @Size(max = 500, message = "Descrição deve ter no máximo 500 caracteres")
+    private String description;
+
+    @Size(max = 255, message = "ID externo deve ter no máximo 255 caracteres")
+    private String externalId;
 }
