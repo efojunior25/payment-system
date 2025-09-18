@@ -40,5 +40,5 @@ CMD ["java", \
      "-XX:+UseG1GC", \
      "-XX:+UseContainerSupport", \
      "-Djava.security.egd=file:/dev/./urandom", \
-     "-jar", "target/payment-system-0.0.1-SNAPSHOT.jar",
+     "-jar", "target/payment-system-0.0.1-SNAPSHOT.jar", \
      "--spring.profiles.active=docker"]
