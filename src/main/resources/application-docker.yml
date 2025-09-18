@@ -3,27 +3,66 @@ spring:
     activate:
       on-profile: docker
 
+  # Database MySQL
   datasource:
-    url: jdbc:mysql://mysql:3306/xunimpay
+    url: jdbc:mysql://mysql:3306/xunimpay?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: xunim
     password: xunim123
     driver-class-name: com.mysql.cj.jdbc.Driver
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
 
+  # Flyway Configuration
+  flyway:
+    enabled: false
+
+  # MongoDB
   data:
     mongodb:
       uri: mongodb://admin:admin@mongodb:27017/xunimpay_audit?authSource=admin
 
+    # Redis Configuration
     redis:
       host: redis
       port: 6379
       password: redis123
+      timeout: 2000ms
 
+  # RabbitMQ Configuration
   rabbitmq:
     host: rabbitmq
     port: 5672
     username: admin
     password: admin
 
-  jpa:
-    hibernate:
-      ddl-auto: validate
+# Server configuration
+server:
+  port: 8080
+
+# Logging for Docker
+logging:
+  level:
+    com.xunim: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+  file:
+    name: logs/xunimpay.log
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
